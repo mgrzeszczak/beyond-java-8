@@ -1,6 +1,6 @@
 # Beyond Java 8
 
-This is a curated list of language related (syntax, methods) features that are present if later versions of Java (beyond 8). Each feature will be provided with an example in a Spock-like assertion manner.
+This is an updated list of language related (syntax, methods) features that are present if later versions of Java (beyond 8). Each feature will be provided with an example (sometimes pseudo-code like).
 
 ## Java 9
 
@@ -28,7 +28,14 @@ This is a curated list of language related (syntax, methods) features that are p
    }
    ```
 
-2. Collection static factory methods
+2. Collection static factory methods - it is finally possible to create instances of List, Set and Map using a static constructor with concise syntax
+
+   ```
+   List.of(1,2,3)
+   Set.of(1,2,3)
+   Map.of("key1", "value1", "key2", "value2")
+   Map.ofEntries(Map.entry("key1", "value2"), Map.entry("key2", "value2"))
+   ```
 
 3. New stream methods
    - `Stream.ofNullable` - create stream from a possibly null object
@@ -51,31 +58,38 @@ This is a curated list of language related (syntax, methods) features that are p
        .collect(Collectors.toList()) == [0,1,2]
    ```
 4. New collector methods
+
    - `Collectors.filtering` - filter while collecting
+
    ```
    Stream.of(1,2,3)
        .collect(Collectors.filtering(i -> i < 2), Collectors.toList()) == [1]
    ```
+
    - `Collectors.flatMapping` - flat map objects into collection while collecting
+
    ```
    class Process {
        private ProcessType type;
        private List<ProcessInstance> instances;
    }
+
    List<Process> processes = ...
+
    Map<ProcessType, List<ProcessInstance>> instancesByType = processes.stream()
        .collect(Collectors.groupingBy(Process::getType, Collectors.flatMapping(p -> p.getInstances().stream(), Collectors.toList())));
    ```
+
 5. Optional
 
-   - `or()` - allows chaining
+   - `or` - allows chaining
 
    ```
    Optional.ofNullable(method1())
     .or(this::method2) // method2 is called only if optional is empty
    ```
 
-   - `stream()` - create a stream from optional, which is either empty or has one element. Useful if we have a stream of optionals.
+   - `stream` - create a stream from optional, which is either empty or has one element. Useful if we have a stream of optionals.
 
    ```
    Stream<Optional<?>> stream = ...
@@ -92,13 +106,23 @@ This is a curated list of language related (syntax, methods) features that are p
    ```
 
 6. New process API
+   - `ProcessHandle` - allows to control native processes
+   ```
+   ProcessHandle.current().pid()
+   ProcessHandle.allProcesses()
+   ProcessHandle.of(pid)
+   ```
 
 ## Java 10
 
 1. Optional
-   - `orElseThrow()` - throws NoSuchElementException when empty
+   - `orElseThrow` - non-parameter version, throws NoSuchElementException when empty
    ```
    Integer value = Optional.of(1).orElseThrow()
+   ```
+2. Local-Variable Type Inference - it's possible to use var keyword instead of specyfing type for local variables
+   ```
+   var result = calculateStats();
    ```
 
 ## License
